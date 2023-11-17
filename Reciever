@@ -1,0 +1,23 @@
+// Import UdpSocket from tokio's net module to work with UDP sockets.
+use tokio::net::UdpSocket;
+// Import the Error trait from the standard library for error handling.
+use std::error::Error;
+
+// Annotate the main function to be run by the tokio runtime, enabling async execution.
+#[tokio::main]
+// Define an asynchronous main function that returns a Result.
+async fn main() -> Result<(), Box<dyn Error>> {
+    // Create and bind a UdpSocket to a local address and port, asynchronously.
+    let socket = UdpSocket::bind("192.168.1.100:12345").await?;
+    // Declare a buffer array of 1024 bytes to store incoming data.
+    let mut buf = [0; 1024];
+
+    // Start an infinite loop to continuously receive data.
+    loop {
+        // Asynchronously wait for data to arrive at the socket,
+        // store the data in buf, and return the length of the received data.
+        let (len, _) = socket.recv_from(&mut buf).await?;
+        // Print the received data, converting bytes to a string and handling invalid UTF-8.
+        println!("Received: {}", String::from_utf8_lossy(&buf[..len]));
+    }
+}
