@@ -1,0 +1,22 @@
+// Import the UdpSocket class from the tokio::net module for handling UDP socket operations.
+use tokio::net::UdpSocket;
+// Import the Error trait from the standard library, which is a common interface for handling errors.
+use std::error::Error;
+
+// The #[tokio::main] attribute transforms the main function into an asynchronous runtime.
+#[tokio::main]
+// Define the main function as asynchronous, which returns a Result type, encapsulating potential errors in a Box<dyn Error>.
+async fn main() -> Result<(), Box<dyn Error>> {
+    // Create a UDP socket and bind it to any available port on the local machine asynchronously.
+    let socket = UdpSocket::bind("0.0.0.0:0").await?;
+    // Connect the socket to a remote address, specified by IP and port, asynchronously.
+    socket.connect("192.168.1.100:12345").await?;
+
+    // Define the message to be sent as a byte string.
+    let data = b"Hello, world!";
+    // Send the data through the socket to the connected address, asynchronously.
+    socket.send(data).await?;
+
+    // Return Ok(()) to indicate successful execution of the function.
+    Ok(())
+}
